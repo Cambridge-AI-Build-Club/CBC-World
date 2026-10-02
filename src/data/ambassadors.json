@@ -33,5 +33,33 @@
     "university": "University of Georgia",
     "email": "ath18631@uga.edu",
     "linkedin": "aidenhodgson"
+  },
+  {
+    "id": "rohan-yelandur",
+    "name": "Rohan Yelandur",
+    "university": "University of Texas at Austin",
+    "email": "rohan.yelandur@utexas.edu",
+    "linkedin": "https://www.linkedin.com/in/rohan-yelandur"
+  },
+  {
+    "id": "isabel-amaya",
+    "name": "Isabel Amaya",
+    "university": "University of Washington",
+    "email": "Iamaya@uw.edu",
+    "linkedin": "https://www.linkedin.com/in/isabel-amaya123"
+  },
+  {
+    "id": "mohiuddin-syed",
+    "name": "Mohiuddin Syed",
+    "university": "New York University",
+    "email": "N/A",
+    "linkedin": "www.linkedin.com/in/mohiuddinsyed0119"
+  },
+  {
+    "id": "dhruva-lepakshi",
+    "name": "Dhruva Lepakshi",
+    "university": "New Jersey Institute of Technology",
+    "email": "dl569@njit.edu",
+    "linkedin": "https://www.linkedin.com/in/dhruva-lepakshi/"
   }
 ]

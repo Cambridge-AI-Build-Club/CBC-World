@@ -77,6 +77,18 @@
     "lat": 1.2966,
     "lng": 103.7764
   },
+  "New Jersey Institute of Technology": {
+    "city": "Newark",
+    "country": "United States",
+    "lat": 40.7421,
+    "lng": -74.179
+  },
+  "New York University": {
+    "city": "New York",
+    "country": "United States",
+    "lat": 40.7292,
+    "lng": -73.995
+  },
   "Seoul National University": {
     "city": "Seoul",
     "country": "South Korea",
@@ -185,11 +197,23 @@
     "lat": -33.8886,
     "lng": 151.1873
   },
+  "University of Texas at Austin": {
+    "city": "Austin",
+    "country": "United States",
+    "lat": 30.2851,
+    "lng": -97.7339
+  },
   "University of Toronto": {
     "city": "Toronto",
     "country": "Canada",
     "lat": 43.6629,
     "lng": -79.3957
+  },
+  "University of Washington": {
+    "city": "Seattle",
+    "country": "United States",
+    "lat": 47.6554,
+    "lng": -122.3002
   },
   "University of Waterloo": {
     "city": "Waterloo",
