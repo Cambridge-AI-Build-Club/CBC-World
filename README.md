@@ -33,6 +33,8 @@ git remote add origin https://github.com/<user>/<repo>.git
 git push -u origin main
 ```
 
+**Link previews** (Slack, Teams, LinkedIn and others) use `public/og.jpg` and the Open Graph tags in `index.html`. The workflow fills in the site's absolute URL automatically. To change the preview, replace `public/og.jpg` with another 1200×630 image (or 2400×1260 for high-resolution screens).
+
 After that, updating the map is: run `npm run import`, commit the changed JSON files, and push.
 
 ## Features
