@@ -1,11 +1,11 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import Globe, { type GlobeMethods } from 'react-globe.gl';
-import { MeshPhongMaterial, Color } from 'three';
+import { MeshPhongMaterial, Color, type PerspectiveCamera } from 'three';
 import { feature } from 'topojson-client';
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { Topology } from 'topojson-specification';
 import countriesTopo from 'world-atlas/countries-110m.json';
-import { arcDistance, CLUSTER_FACTOR, clusterHubs } from '../lib/geo';
+import { arcDistance, clusterHubs, minPairDistance } from '../lib/geo';
 import type { Cluster, UniversityHub } from '../types';
 
 const countries = feature(
@@ -25,6 +25,11 @@ const landFeatures = countries.features
 
 const MIN_ALT = 0.15;
 const MAX_ALT = 4.5;
+/** Two markers closer than this on screen merge into one (dot + halo is ~28px). */
+const MARKER_GAP_PX = 30;
+/** Never zoom closer than this when flying to a selection; the dot grid gets coarse. */
+const FOCUS_MIN_ALT = 0.3;
+const FOCUS_MAX_ALT = 1.0;
 /** Below this altitude the arcs read as clutter, so they are hidden. */
 const ARC_MAX_ZOOM_ALT = 1.1;
 
@@ -39,6 +44,8 @@ const markerVisibility = (el: HTMLElement, visible: boolean) => {
 
 export interface GlobeHandle {
   flyTo: (lat: number, lng: number, altitude?: number, ms?: number) => void;
+  /** Fly to universities, zooming in far enough to separate them from neighbours when possible. */
+  focus: (hubs: UniversityHub[]) => void;
   zoomBy: (factor: number) => void;
   reset: () => void;
 }
@@ -83,6 +90,34 @@ function buildArcs(hubs: UniversityHub[]): Arc[] {
 
 const EMPTY: never[] = [];
 
+const plural = (n: number, word: string) =>
+  `${n} ${n === 1 ? word : word.endsWith('y') ? `${word.slice(0, -1)}ies` : `${word}s`}`;
+
+function renderLabel(el: HTMLElement, c: Cluster, selectedIds: string[], separable: boolean) {
+  const label = el.querySelector('.marker-label');
+  if (!label) return;
+  const selected = c.hubs.filter((h) => selectedIds.includes(h.id));
+  let title: string;
+  let sub: string;
+  if (c.hubs.length === 1) {
+    title = c.hubs[0].name;
+    sub = `${c.hubs[0].city}, ${c.hubs[0].country} · ${plural(c.count, 'ambassador')}`;
+  } else if (selected.length) {
+    const others = c.hubs.length - selected.length;
+    title = selected.map((h) => h.name).join(' & ');
+    sub = others
+      ? `+ ${plural(others, 'university')} nearby${separable ? ' · zoom in to separate' : ''}`
+      : `${selected[0].city}, ${selected[0].country}`;
+  } else {
+    title = plural(c.hubs.length, 'university');
+    sub = `${plural(c.count, 'ambassador')} · ${separable ? 'click to zoom' : 'click to view'}`;
+  }
+  const small = document.createElement('small');
+  small.textContent = sub;
+  label.replaceChildren(title, small);
+  el.setAttribute('aria-label', `${title}. ${sub}`);
+}
+
 function useInitialAltitude() {
   return typeof window !== 'undefined' && window.innerWidth < 768 ? 3.4 : 2.3;
 }
@@ -98,7 +133,19 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
   // Quantised altitude drives re-clustering so we don't recompute every frame.
   const [altBucket, setAltBucket] = useState(() => Math.round(Math.log(initialAlt) * 6));
 
-  const clusters = useMemo(() => clusterHubs(hubs, Math.exp(altBucket / 6), selectedIds), [hubs, altBucket, selectedIds]);
+  // Screen pixels spanned by one degree of arc at the centre of view, at altitude 1.
+  // The camera sits `altitude` globe radii above the surface, so this scales with 1/altitude.
+  const pxPerDegAtAlt1 = useMemo(() => {
+    const fov = (globeRef.current?.camera() as PerspectiveCamera | undefined)?.fov ?? 50;
+    return (size.h / 2 / Math.tan((fov * Math.PI) / 360)) * (Math.PI / 180);
+  }, [size.h]);
+  /** Altitude at which two points `deg` apart sit just far enough apart on screen not to overlap. */
+  const altToSeparate = useCallback((deg: number) => (deg * pxPerDegAtAlt1) / (MARKER_GAP_PX * 1.2), [pxPerDegAtAlt1]);
+
+  const isSeparable = useCallback((c: Cluster) => altToSeparate(minPairDistance(c.hubs)) >= MIN_ALT, [altToSeparate]);
+
+  const clusterRadius = (MARKER_GAP_PX * Math.exp(altBucket / 6)) / pxPerDegAtAlt1;
+  const clusters = useMemo(() => clusterHubs(hubs, clusterRadius), [hubs, clusterRadius]);
   const allArcs = useMemo(() => buildArcs(hubs), [hubs]);
   const showArcs = Math.exp(altBucket / 6) > ARC_MAX_ZOOM_ALT;
   const arcs = showArcs ? allArcs : EMPTY;
@@ -138,10 +185,29 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
     g.pointOfView({ lat, lng, altitude: altitude ?? g.pointOfView().altitude }, ms);
   }, []);
 
+  const focus = useCallback(
+    (picked: UniversityHub[]) => {
+      if (!picked.length) return;
+      const lat = picked.reduce((n, h) => n + h.lat, 0) / picked.length;
+      const lng = picked.reduce((n, h) => n + h.lng, 0) / picked.length;
+      const ids = new Set(picked.map((h) => h.id));
+      let nearest = Infinity;
+      for (const p of picked)
+        for (const h of hubs) if (!ids.has(h.id)) nearest = Math.min(nearest, arcDistance(p.lat, p.lng, h.lat, h.lng));
+      const needed = altToSeparate(nearest);
+      // Close enough in to give the selection its own marker; if neighbours are too close
+      // to ever separate comfortably, settle for a metro-level view of the shared marker.
+      const altitude = needed >= FOCUS_MIN_ALT ? Math.min(FOCUS_MAX_ALT, needed) : 0.6;
+      flyTo(lat, lng, altitude, 1300);
+    },
+    [hubs, altToSeparate, flyTo],
+  );
+
   useImperativeHandle(
     ref,
     () => ({
       flyTo,
+      focus,
       zoomBy: (factor) => {
         const g = globeRef.current;
         if (!g) return;
@@ -150,7 +216,7 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
       },
       reset: () => flyTo(22, 10, initialAlt, 1400),
     }),
-    [flyTo, initialAlt],
+    [flyTo, focus, initialAlt],
   );
 
   const handleClusterClick = useCallback(
@@ -160,22 +226,23 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
         onSelectRef.current(c.hubs);
         return;
       }
-      let minPair = Infinity;
-      for (let i = 0; i < c.hubs.length; i++)
-        for (let j = i + 1; j < c.hubs.length; j++)
-          minPair = Math.min(minPair, arcDistance(c.hubs[i].lat, c.hubs[i].lng, c.hubs[j].lat, c.hubs[j].lng));
-      if (minPair < 0.15) {
-        // Universities effectively share a location: show them together.
+      if (!isSeparable(c)) {
+        // Too close to ever separate on screen (e.g. same city): show them together.
         onSelectRef.current(c.hubs);
       } else {
-        flyTo(c.lat, c.lng, Math.max(MIN_ALT, (minPair / CLUSTER_FACTOR) * 0.7), 1100);
+        flyTo(c.lat, c.lng, Math.max(MIN_ALT, altToSeparate(minPairDistance(c.hubs)) * 0.85), 1100);
       }
     },
-    [flyTo],
+    [flyTo, altToSeparate, isSeparable],
   );
 
-  // Marker DOM nodes are cached per cluster id so globe.gl can reuse them.
+  // Marker DOM nodes are cached per cluster id so globe.gl can reuse them; they reach the
+  // latest handlers through refs so cached nodes never act on stale zoom maths.
   const markerCache = useRef(new Map<string, HTMLElement>());
+  const clusterClickRef = useRef(handleClusterClick);
+  clusterClickRef.current = handleClusterClick;
+  const isSeparableRef = useRef(isSeparable);
+  isSeparableRef.current = isSeparable;
   const makeMarker = useCallback(
     (d: object) => {
       const c = d as Cluster;
@@ -195,21 +262,11 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
       dot.textContent = String(c.count);
       const label = document.createElement('span');
       label.className = 'marker-label';
-      const title = c.hubs.length === 1 ? c.hubs[0].name : `${c.hubs.length} universities`;
-      const sub =
-        c.hubs.length === 1
-          ? `${c.hubs[0].city}, ${c.hubs[0].country} · ${c.count} ambassador${c.count === 1 ? '' : 's'}`
-          : `${c.count} ambassadors · click to zoom`;
-      label.append(title);
-      const small = document.createElement('small');
-      small.textContent = sub;
-      label.append(small);
-      el.setAttribute('aria-label', `${title}. ${sub}`);
-
       el.append(pulse, dot, label);
+      renderLabel(el, c, [], isSeparableRef.current(c));
       const activate = (e: Event) => {
         e.stopPropagation();
-        handleClusterClick(c);
+        clusterClickRef.current(c);
       };
       el.addEventListener('click', activate);
       el.addEventListener('pointerdown', (e) => e.stopPropagation());
@@ -222,16 +279,19 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
       markerCache.current.set(c.id, el);
       return el;
     },
-    [handleClusterClick],
+    [],
   );
 
-  // Reflect selection on markers.
+  // Reflect selection on markers: highlight, and name the selected university even
+  // when it shares a marker with neighbours.
   useEffect(() => {
     for (const c of clusters) {
       const el = markerCache.current.get(c.id);
-      if (el) el.dataset.active = String(c.hubs.some((h) => selectedIds.includes(h.id)));
+      if (!el) continue;
+      el.dataset.active = String(c.hubs.some((h) => selectedIds.includes(h.id)));
+      renderLabel(el, c, selectedIds, isSeparable(c));
     }
-  }, [clusters, selectedIds]);
+  }, [clusters, selectedIds, isSeparable]);
 
   // Auto-rotation + interaction hooks on the orbit controls.
   useEffect(() => {

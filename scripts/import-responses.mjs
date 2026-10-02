@@ -52,7 +52,12 @@ function parseCsv(text) {
 }
 
 const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-const clean = (s) => (s ?? '').trim().replace(/\s+/g, ' ');
+// Placeholder answers people type into optional questions count as blank.
+const PLACEHOLDER = /^(n\/?a|none|nil|null|no|-+|\.+|—)$/i;
+const clean = (s) => {
+  const v = (s ?? '').trim().replace(/\s+/g, ' ');
+  return PLACEHOLDER.test(v) ? '' : v;
+};
 
 const args = process.argv.slice(2);
 const source = args.find((a) => !a.startsWith('--'));

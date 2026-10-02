@@ -23,27 +23,22 @@ function centroid(points: { lat: number; lng: number }[]) {
   return { lat: toDeg(Math.atan2(z, Math.hypot(x, y))), lng: toDeg(Math.atan2(y, x)) };
 }
 
-/** Cluster radius in degrees per unit of camera altitude (~ marker size on screen). */
-export const CLUSTER_FACTOR = 2.6;
-
 /**
- * Greedy clustering whose radius scales with camera altitude: zoomed out,
- * nearby universities merge into one marker; zoomed in, they separate.
+ * Greedy clustering: universities closer than `radiusDeg` share one marker.
+ * The caller derives the radius from how many screen pixels a degree spans at the
+ * current zoom, so markers merge exactly when they would visually overlap.
  */
-export function clusterHubs(hubs: UniversityHub[], altitude: number, pinned: string[] = []): Cluster[] {
-  const radius = Math.max(0.05, altitude * CLUSTER_FACTOR);
-  // Pinned (selected) hubs always get their own marker.
-  const groups: UniversityHub[][] = hubs.filter((h) => pinned.includes(h.id)).map((h) => [h]);
-  const sorted = hubs.filter((h) => !pinned.includes(h.id)).sort((a, b) => b.ambassadors.length - a.ambassadors.length);
-  const offset = groups.length;
+export function clusterHubs(hubs: UniversityHub[], radiusDeg: number): Cluster[] {
+  const sorted = [...hubs].sort((a, b) => b.ambassadors.length - a.ambassadors.length);
+  const groups: UniversityHub[][] = [];
   const seeds: UniversityHub[] = [];
   for (const hub of sorted) {
-    const i = seeds.findIndex((s) => arcDistance(s.lat, s.lng, hub.lat, hub.lng) < radius);
+    const i = seeds.findIndex((s) => arcDistance(s.lat, s.lng, hub.lat, hub.lng) < radiusDeg);
     if (i === -1) {
       seeds.push(hub);
       groups.push([hub]);
     } else {
-      groups[offset + i].push(hub);
+      groups[i].push(hub);
     }
   }
   return groups.map((g) => {
@@ -56,4 +51,13 @@ export function clusterHubs(hubs: UniversityHub[], altitude: number, pinned: str
       count: g.reduce((n, h) => n + h.ambassadors.length, 0),
     };
   });
+}
+
+/** Smallest distance between any two of the given hubs, in degrees. */
+export function minPairDistance(hubs: UniversityHub[]) {
+  let min = Infinity;
+  for (let i = 0; i < hubs.length; i++)
+    for (let j = i + 1; j < hubs.length; j++)
+      min = Math.min(min, arcDistance(hubs[i].lat, hubs[i].lng, hubs[j].lat, hubs[j].lng));
+  return min;
 }

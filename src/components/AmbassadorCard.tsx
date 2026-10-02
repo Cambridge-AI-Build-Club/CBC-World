@@ -27,15 +27,17 @@ const ROW_ACTION =
 export function AmbassadorCard({ person, index }: { person: Ambassador; index: number }) {
   const [copied, setCopied] = useState(false);
   const gh = githubHandle(person.github);
+  // Form answers like "N/A" or "-" are not contact details.
+  const email = person.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(person.email) ? person.email : undefined;
 
   const copyEmail = async () => {
-    if (!person.email) return;
+    if (!email) return;
     try {
-      await navigator.clipboard.writeText(person.email);
+      await navigator.clipboard.writeText(email);
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     } catch {
-      window.location.href = `mailto:${person.email}`;
+      window.location.href = `mailto:${email}`;
     }
   };
 
@@ -63,13 +65,13 @@ export function AmbassadorCard({ person, index }: { person: Ambassador; index: n
 
       {person.bio && <p className="mt-3 text-[13px] leading-relaxed text-cream-300">{person.bio}</p>}
 
-      {(person.email || linkedin || links.length > 0) && (
+      {(email || linkedin || links.length > 0) && (
         <div className="mt-3 space-y-1.5">
-          {person.email && (
+          {email && (
             <div className={ROW}>
-              <a href={`mailto:${person.email}`} className={ROW_LINK} title={`Email ${person.name}`}>
+              <a href={`mailto:${email}`} className={ROW_LINK} title={`Email ${person.name}`}>
                 <Mail className="h-3.5 w-3.5 shrink-0 text-cream-400" />
-                <span className="truncate font-mono text-[12px]">{person.email}</span>
+                <span className="truncate font-mono text-[12px]">{email}</span>
               </a>
               <button
                 type="button"

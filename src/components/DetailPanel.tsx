@@ -53,7 +53,7 @@ export function DetailPanel({ hubs, desktop, onClose }: Props) {
             <div className="min-w-0 flex-1">
               <p className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.12em] text-clay-400">
                 <MapPin className="h-3.5 w-3.5" />
-                {first.city}, {first.country}
+                {[...new Set(hubs.map((h) => h.city))].join(' · ')}, {first.country}
               </p>
               <h2 className="font-serif text-[22px] leading-tight text-cream-50">
                 {hubs.length === 1 ? first.name : `${hubs.length} universities`}

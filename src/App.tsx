@@ -31,9 +31,7 @@ export default function App() {
     setSelectedIds(picked.map((h) => h.id));
     setAutoRotate(false);
     setMobileListOpen(false);
-    const lat = picked.reduce((n, h) => n + h.lat, 0) / picked.length;
-    const lng = picked.reduce((n, h) => n + h.lng, 0) / picked.length;
-    globe.current?.flyTo(lat, lng, 1.0, 1300);
+    globe.current?.focus(picked);
   }, []);
 
   const handleInteract = useCallback(() => {
