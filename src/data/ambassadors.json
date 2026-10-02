@@ -61,5 +61,19 @@
     "university": "New Jersey Institute of Technology",
     "email": "dl569@njit.edu",
     "linkedin": "https://www.linkedin.com/in/dhruva-lepakshi/"
+  },
+  {
+    "id": "varshini-hari",
+    "name": "Varshini Hari",
+    "university": "University of Washington",
+    "email": "vrshnhari@gmail.com",
+    "linkedin": "www.linkedin.com/in/varshini-hari-50739a2b2"
+  },
+  {
+    "id": "hazel-quach",
+    "name": "Hazel Quach",
+    "university": "University of California Berkeley",
+    "email": "hazelquachh@berkeley.edu",
+    "linkedin": "https://www.linkedin.com/in/hazel-quach-25568838b?"
   }
 ]
