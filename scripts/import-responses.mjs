@@ -2,15 +2,18 @@
 // Imports sign-up form responses into src/data/ambassadors.json, then geocodes new universities.
 //
 // Usage:
-//   npm run import -- responses.csv
+//   npm run import -- responses.xlsx --replace         # build the list from these responses only
+//   npm run import -- responses.csv                    # merge into the existing list
 //   npm run import -- "https://docs.google.com/spreadsheets/d/e/<ID>/pub?output=csv"
-//   npm run import -- responses.csv --approved-only   # only rows whose "Approved" column is yes/true/x
+//   npm run import -- responses.xlsx --approved-only   # only rows whose "Approved" column is yes/true/x
 //
-// Google Forms: link the form to a Sheet, then File → Download → CSV (or File → Share → Publish to web → CSV).
-// Microsoft Forms: Responses → Open in Excel, then save as CSV.
+// Microsoft Forms: Responses → Open results in Excel → use the downloaded .xlsx as is.
+// Google Forms: link the form to a Sheet, then File → Download → CSV (or Publish to web → CSV).
 // Columns are matched by header keywords, so question wording can vary (see FIELDS below).
-// Existing ambassadors are matched by email (or name + university) and updated in place.
+// When merging, existing ambassadors are matched by email (or name + university) and updated in place.
+// Rows that leave a consent question (header containing "agree"/"consent") blank are skipped.
 import { readFile, writeFile } from 'node:fs/promises';
+import { readSheet } from 'read-excel-file/node';
 import { spawnSync } from 'node:child_process';
 
 const AMBASSADORS = new URL('../src/data/ambassadors.json', import.meta.url);
@@ -54,17 +57,39 @@ const clean = (s) => (s ?? '').trim().replace(/\s+/g, ' ');
 const args = process.argv.slice(2);
 const source = args.find((a) => !a.startsWith('--'));
 const approvedOnly = args.includes('--approved-only');
+const replace = args.includes('--replace');
 if (!source) {
-  console.error('Usage: npm run import -- <responses.csv | published CSV URL> [--approved-only]');
+  console.error('Usage: npm run import -- <responses.xlsx | responses.csv | published CSV URL> [--replace] [--approved-only]');
   process.exit(1);
 }
 
-const text = /^https?:\/\//.test(source) ? await (await fetch(source)).text() : await readFile(source, 'utf8');
-const [header, ...rows] = parseCsv(text.replace(/^﻿/, ''));
+async function loadRows(src) {
+  if (/\.xlsx$/i.test(src)) {
+    const data = await readSheet(src);
+    return data.map((row) => row.map((v) => (v == null ? '' : v instanceof Date ? v.toISOString() : String(v))));
+  }
+  const text = /^https?:\/\//.test(src) ? await (await fetch(src)).text() : await readFile(src, 'utf8');
+  return parseCsv(text.replace(/^\uFEFF/, ''));
+}
+
+const [header, ...rows] = (await loadRows(source)).filter((r) => r.some((c) => c.trim()));
+if (!header) {
+  console.error('No rows found in', source);
+  process.exit(1);
+}
+// Columns the form tools add themselves. Microsoft Forms puts the respondent's account
+// "Name"/"Email" (often "anonymous") before the questions, so prefer question columns.
+const METADATA = /^(id|start time|completion time|last modified time|timestamp|name|email|total points|quiz feedback)$/i;
+// A consent question like "I agree to my name and email being shown" must not match those fields.
+const CONSENT = /agree|consent/i;
 const col = {};
 for (const [key, patterns] of Object.entries(FIELDS)) {
-  const idx = header.findIndex((h) => patterns.some((p) => p.test(h)));
-  if (idx !== -1 && !Object.values(col).includes(idx)) col[key] = idx;
+  const candidates = header
+    .map((h, i) => ({ h: h.trim(), i }))
+    .filter(({ h, i }) => patterns.some((p) => p.test(h)) && !Object.values(col).includes(i))
+    .filter(({ h }) => key === 'approved' || !CONSENT.test(h));
+  const pick = candidates.find(({ h }) => !METADATA.test(h)) ?? candidates[candidates.length - 1];
+  if (pick) col[key] = pick.i;
 }
 for (const required of ['name', 'university']) {
   if (col[required] === undefined) {
@@ -74,12 +99,14 @@ for (const required of ['name', 'university']) {
 }
 console.log('Column mapping:', Object.fromEntries(Object.entries(col).map(([k, i]) => [k, header[i]])));
 
-const ambassadors = JSON.parse(await readFile(AMBASSADORS, 'utf8'));
+const consentCol = header.findIndex((h) => CONSENT.test(h));
+const ambassadors = replace ? [] : JSON.parse(await readFile(AMBASSADORS, 'utf8'));
 let added = 0, updated = 0, skipped = 0;
 
 for (const r of rows) {
   const get = (k) => (col[k] === undefined ? '' : clean(r[col[k]]));
   if (approvedOnly && !/^(y|yes|true|x|✓|approved)$/i.test(get('approved'))) { skipped++; continue; }
+  if (consentCol !== -1 && !clean(r[consentCol])) { skipped++; continue; }
   const name = get('name'), university = get('university');
   if (!name || !university) { skipped++; continue; }
 
@@ -101,5 +128,7 @@ for (const r of rows) {
 }
 
 await writeFile(AMBASSADORS, JSON.stringify(ambassadors, null, 2) + '\n');
-console.log(`\nAdded ${added}, updated ${updated}, skipped ${skipped}. Now geocoding any new universities…\n`);
+console.log(
+  `\n${replace ? 'Replaced the list with' : 'Added'} ${added}${replace ? ' ambassadors' : `, updated ${updated}`}, skipped ${skipped}. Now geocoding any new universities…\n`,
+);
 spawnSync(process.execPath, [new URL('./geocode.mjs', import.meta.url).pathname], { stdio: 'inherit' });

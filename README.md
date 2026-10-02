@@ -23,7 +23,7 @@ One-time setup:
 
 1. Create an empty repository on GitHub and push this project to it (see the commands below).
 2. In the repository, go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
-3. Optional: under **Settings → Secrets and variables → Actions → Variables**, add `VITE_FORM_EMBED_URL` (and `VITE_FORM_LINK` if you want it). These are built into the site, so they are variables, not secrets.
+3. Optional: to use a different form than the one in `src/config.ts`, add `VITE_FORM_EMBED_URL` under **Settings → Secrets and variables → Actions → Variables**.
 4. Push to `main` and watch the **Actions** tab. The site appears at `https://<user>.github.io/<repo>/`.
 
 ```bash
@@ -47,23 +47,23 @@ After that, updating the map is: run `npm run import`, commit the changed JSON f
 
 ## Connecting the sign-up form
 
-Set `VITE_FORM_EMBED_URL` in `.env`:
+The form is set in `src/config.ts` (`DEFAULT_FORM_LINK`). To switch forms, change it there, or override it with `VITE_FORM_EMBED_URL` in `.env` or as a GitHub Actions variable:
 
 | Provider | Where to find the embed URL | Looks like |
 |---|---|---|
 | Google Forms | **Send** → `< >` tab → copy the `src="…"` value | `https://docs.google.com/forms/d/e/<ID>/viewform?embedded=true` |
 | Microsoft Forms | **Collect responses** → **Embed** → copy the `src="…"` value | `https://forms.office.com/Pages/ResponsePage.aspx?id=<ID>&embed=true` |
 
-Recommended questions:
+Essential questions (titles in bold; the import script matches on these words):
 
-- **Full name**
-- **University** (the full official name, e.g. "University of Cambridge")
-- **Email**
-- **Role** (e.g. Campus Ambassador, Builder Club Lead)
-- **Course / degree**
-- **LinkedIn**, **GitHub**, **Website** (optional)
-- **Short bio** (optional)
-- A consent checkbox agreeing to have these details shown publicly
+1. **Full name**
+2. **University**, with the subtitle "Full official name, e.g. University of Cambridge". This keeps one university from turning into several pins.
+3. **Email**, shown publicly as the contact method
+4. **Consent**: "I agree to my name, university, email and any links being shown publicly on the map." Make it required.
+
+Optional extras: **LinkedIn**, and **Role** (a Choice question, e.g. Campus Ambassador or Builder Club Lead). The script also understands **GitHub**, **Website**, **Course** and **Bio** if you add them later.
+
+For Microsoft Forms, set **Settings → Who can fill out this form** to **Anyone can respond**. The extra Name and Email columns Microsoft adds to the export are ignored automatically.
 
 ## Updating the map
 
@@ -74,18 +74,22 @@ Ambassador data lives in two files:
 
 ### From form responses (recommended)
 
-1. Export the responses as CSV.
-   - Google Forms: link the form to a Sheet, then **File → Download → CSV**. You can instead publish the sheet to the web as CSV and pass that URL.
-   - Microsoft Forms: **Open in Excel**, then save as CSV.
-2. Optionally add an **Approved** column and mark the rows you've reviewed with `yes`.
-3. Run:
+1. Download the responses.
+   - Microsoft Forms: **Responses → Open results in Excel**. Use the downloaded `.xlsx` as is.
+   - Google Forms: link the form to a Sheet, then **File → Download → CSV**.
+2. Optional: add an **Approved** column in the spreadsheet and put `yes` next to the rows you've reviewed.
+3. Build the list from the responses:
 
    ```bash
-   npm run import -- path/to/responses.csv --approved-only
+   npm run import -- ~/Downloads/responses.xlsx --replace
    ```
 
-   Columns are matched by keywords, so question wording can vary. Existing entries are matched by email and updated in place. New universities are geocoded automatically.
-4. Check the result with `npm run dev`, then rebuild and redeploy.
+   - `--replace` rebuilds the list from this file only. This also removes the sample data. Leave it out to merge into the existing list instead.
+   - `--approved-only` imports only the rows marked `yes` in the Approved column.
+   - Rows with an empty consent answer are always skipped. New universities are geocoded automatically.
+4. Preview with `npm run dev`, then commit `src/data/` and push. GitHub Actions rebuilds and redeploys the site.
+
+The form's export always contains every response so far, so running with `--replace` each time keeps the site exactly in sync with the form.
 
 ### By hand
 
@@ -106,7 +110,7 @@ Add an entry to `ambassadors.json`. If the university is new, run `npm run geoco
 }
 ```
 
-> **Note:** The ambassadors that ship with this repo are fictional sample data with `example.com` emails. Replace `src/data/ambassadors.json` with real entries before launch.
+> **Note:** The ambassadors that ship with this repo are fictional sample data with `example.com` emails. Your first `npm run import -- <file> --replace` removes them.
 
 ## Privacy
 

@@ -46,20 +46,12 @@ export function JoinModal({ open, onClose }: Props) {
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
             className="glass relative flex h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-b-none bg-ink-900/95 sm:h-[86vh] sm:rounded-b-2xl"
           >
-            <header className="flex items-start gap-4 border-b border-white/[0.06] px-6 py-5">
-              <div className="hidden shrink-0 sm:block">
-                <ClawdLogo size={48} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h2 id="join-title" className="font-serif text-2xl text-cream-50">
-                  Put your campus on the map
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-cream-300">
-                  Are you a Claude Ambassador who isn't listed yet? Share your university and contact details, and we'll
-                  add you to the globe once your submission is reviewed.
-                </p>
-              </div>
-              <button ref={closeRef} type="button" onClick={onClose} className="icon-btn -mr-2 -mt-1 shrink-0" aria-label="Close">
+            <header className="flex items-center gap-3 border-b border-white/[0.06] px-5 py-3">
+              <ClawdLogo size={36} />
+              <h2 id="join-title" className="min-w-0 flex-1 truncate font-serif text-xl text-cream-50">
+                Join the map
+              </h2>
+              <button ref={closeRef} type="button" onClick={onClose} className="icon-btn -mr-2 shrink-0" aria-label="Close">
                 <X className="h-[18px] w-[18px]" />
               </button>
             </header>
