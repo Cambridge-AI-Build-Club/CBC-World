@@ -47,6 +47,12 @@
     "lat": 19.1334,
     "lng": 72.9133
   },
+  "Indiana University Bloomington": {
+    "city": "Bloomington",
+    "country": "United States",
+    "lat": 39.1802,
+    "lng": -86.5094
+  },
   "KAIST": {
     "city": "Daejeon",
     "country": "South Korea",

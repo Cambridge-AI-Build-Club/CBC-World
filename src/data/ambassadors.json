@@ -95,5 +95,19 @@
     "university": "University of Illinois Urbana-Champaign",
     "email": "jtrej7@illinois.edu",
     "linkedin": "https://linkedin.com/in/jovanitrejo"
+  },
+  {
+    "id": "hyunwook-lee",
+    "name": "Hyunwook Lee",
+    "university": "Indiana University Bloomington",
+    "email": "hl121@iu.edu",
+    "linkedin": "www.linkedin.com/in/hyunwooklee"
+  },
+  {
+    "id": "aaron-sulbaran",
+    "name": "Aaron Sulbaran",
+    "university": "University of Texas at Austin",
+    "email": "aaronsulbaran@utexas.edu",
+    "linkedin": "https://www.linkedin.com/in/aaron-sulbaran/"
   }
 ]
