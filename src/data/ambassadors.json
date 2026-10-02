@@ -52,7 +52,6 @@
     "id": "mohiuddin-syed",
     "name": "Mohiuddin Syed",
     "university": "New York University",
-    "email": "N/A",
     "linkedin": "www.linkedin.com/in/mohiuddinsyed0119"
   },
   {
@@ -75,5 +74,26 @@
     "university": "University of California Berkeley",
     "email": "hazelquachh@berkeley.edu",
     "linkedin": "https://www.linkedin.com/in/hazel-quach-25568838b?"
+  },
+  {
+    "id": "thai-tran",
+    "name": "Thai Tran",
+    "university": "McGill University",
+    "email": "minh.thai.tran@mail.mcgill.ca",
+    "linkedin": "https://www.linkedin.com/in/thai-tran-minh/"
+  },
+  {
+    "id": "evan-schaffer",
+    "name": "Evan Schaffer",
+    "university": "Arizona State University",
+    "email": "Evan@schaffer.com",
+    "linkedin": "https://www.linkedin.com/in/evan-schaffer-3a380b356?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
+  },
+  {
+    "id": "jovani-trejo",
+    "name": "Jovani Trejo",
+    "university": "University of Illinois Urbana-Champaign",
+    "email": "jtrej7@illinois.edu",
+    "linkedin": "https://linkedin.com/in/jovanitrejo"
   }
 ]

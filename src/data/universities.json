@@ -1,4 +1,10 @@
 {
+  "Arizona State University": {
+    "city": "Tempe",
+    "country": "United States",
+    "lat": 33.4213,
+    "lng": -111.9332
+  },
   "Carnegie Mellon University": {
     "city": "Pittsburgh",
     "country": "United States",
@@ -172,6 +178,12 @@
     "country": "United States",
     "lat": 33.9404,
     "lng": -83.3731
+  },
+  "University of Illinois Urbana-Champaign": {
+    "city": "Champaign County",
+    "country": "United States",
+    "lat": 40.0762,
+    "lng": -88.2233
   },
   "University of Lagos": {
     "city": "Lagos",
