@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink-900 font-sans text-cream-100 antialiased;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(217, 119, 87, 0.35);
+}
+
+@layer components {
+  .glass {
+    @apply rounded-2xl border border-white/[0.07] bg-ink-900/70 shadow-panel backdrop-blur-xl;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium transition
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-900;
+  }
+  .btn-primary {
+    @apply btn bg-clay-500 px-4 py-2 text-ink-950 hover:bg-clay-400 active:bg-clay-600;
+  }
+  .btn-ghost {
+    @apply btn border border-white/10 bg-white/[0.03] px-3 py-2 text-cream-200 hover:border-white/20 hover:bg-white/[0.07];
+  }
+  .icon-btn {
+    @apply btn h-9 w-9 text-cream-200 hover:bg-white/[0.08] hover:text-cream-50;
+  }
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(240, 238, 230, 0.15) transparent;
+}
+
+/* ---------- Globe background ---------- */
+.space-bg {
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(217, 119, 87, 0.08), transparent 70%),
+    radial-gradient(ellipse 120% 80% at 50% 120%, rgba(217, 119, 87, 0.06), transparent 60%),
+    #141413;
+}
+
+/* ---------- Globe markers (plain DOM, rendered by globe.gl) ---------- */
+.marker {
+  position: relative;
+  pointer-events: auto;
+  cursor: pointer;
+  /* Never transition `transform`: globe.gl rewrites it every frame to position the marker. */
+  will-change: transform;
+  transition: opacity 150ms ease;
+}
+.marker[data-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+.marker-dot {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #d97757;
+  color: #141413;
+  font: 600 11px/1 'Inter Variable', system-ui, sans-serif;
+  box-shadow:
+    0 0 0 3px rgba(20, 20, 19, 0.85),
+    0 0 18px 2px rgba(217, 119, 87, 0.55);
+  transition: transform 180ms ease, background 180ms ease;
+}
+.marker[data-cluster='true'] .marker-dot {
+  min-width: 28px;
+  height: 28px;
+  font-size: 12px;
+  background: #f0eee6;
+  box-shadow:
+    0 0 0 3px rgba(20, 20, 19, 0.85),
+    0 0 0 6px rgba(240, 238, 230, 0.18),
+    0 0 22px 4px rgba(217, 119, 87, 0.45);
+}
+.marker:hover .marker-dot,
+.marker[data-active='true'] .marker-dot {
+  transform: scale(1.18);
+  background: #f0a98a;
+}
+.marker-pulse {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(217, 119, 87, 0.8);
+  animation: marker-pulse 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  pointer-events: none;
+}
+.marker-label {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(-4px);
+  white-space: nowrap;
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: rgba(20, 20, 19, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f0eee6;
+  font: 500 12px/1.2 'Inter Variable', system-ui, sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.marker-label small {
+  display: block;
+  margin-top: 2px;
+  color: #a09d96;
+  font-size: 11px;
+  font-weight: 400;
+}
+.marker:hover .marker-label,
+.marker[data-active='true'] .marker-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@keyframes marker-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* ---------- Clawd logo ---------- */
+.clawd-land {
+  animation: clawd-spin 14s linear infinite;
+}
+.clawd-body {
+  animation: clawd-bob 0.5s steps(1) infinite;
+}
+.clawd-legs-a {
+  animation: clawd-step 0.5s steps(1) infinite;
+}
+.clawd-legs-b {
+  animation: clawd-step 0.5s steps(1) infinite -0.25s;
+}
+.clawd-arms {
+  animation: clawd-arms 0.5s steps(1) infinite;
+}
+.clawd-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: clawd-blink 4.5s infinite;
+}
+.clawd-logo:hover .clawd-land {
+  animation-duration: 5s;
+}
+.clawd-logo:hover .clawd-body,
+.clawd-logo:hover .clawd-legs-a,
+.clawd-logo:hover .clawd-legs-b,
+.clawd-logo:hover .clawd-arms {
+  animation-duration: 0.25s;
+}
+.clawd-logo:hover .clawd-legs-b {
+  animation-delay: -0.125s;
+}
+
+@keyframes clawd-spin {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-60px);
+  }
+}
+@keyframes clawd-step {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.4px);
+  }
+}
+@keyframes clawd-bob {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-0.8px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-0.8px);
+  }
+}
+@keyframes clawd-arms {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.6px);
+  }
+}
+@keyframes clawd-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clawd-land,
+  .clawd-body,
+  .clawd-legs-a,
+  .clawd-legs-b,
+  .clawd-arms,
+  .clawd-eyes,
+  .marker-pulse {
+    animation: none;
+  }
+}
