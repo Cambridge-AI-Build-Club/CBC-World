@@ -12,5 +12,26 @@
     "university": "University of Cambridge",
     "email": "zl600@cam.ac.uk",
     "linkedin": "https://www.linkedin.com/in/zihao-liu-470986208/"
+  },
+  {
+    "id": "lucas-venugopal",
+    "name": "Lucas Venugopal",
+    "university": "McGill University",
+    "email": "lucas.venugopal@gmail.com",
+    "linkedin": "Lucas Venugopal"
+  },
+  {
+    "id": "eera-bhatt",
+    "name": "Eera Bhatt",
+    "university": "Michigan State University",
+    "email": "bhatteer@msu.edu",
+    "linkedin": "https://www.linkedin.com/in/eera-bhatt-114bb1202?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
+  },
+  {
+    "id": "aiden-hodgson",
+    "name": "Aiden Hodgson",
+    "university": "University of Georgia",
+    "email": "ath18631@uga.edu",
+    "linkedin": "aidenhodgson"
   }
 ]

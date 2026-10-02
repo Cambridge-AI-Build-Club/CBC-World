@@ -1,32 +1,200 @@
 {
-  "University of Cambridge": { "city": "Cambridge", "country": "United Kingdom", "lat": 52.2054, "lng": 0.1173 },
-  "University of Oxford": { "city": "Oxford", "country": "United Kingdom", "lat": 51.7548, "lng": -1.2544 },
-  "Imperial College London": { "city": "London", "country": "United Kingdom", "lat": 51.4988, "lng": -0.1749 },
-  "University College London": { "city": "London", "country": "United Kingdom", "lat": 51.5246, "lng": -0.134 },
-  "University of Edinburgh": { "city": "Edinburgh", "country": "United Kingdom", "lat": 55.9445, "lng": -3.1892 },
-  "ETH Zürich": { "city": "Zürich", "country": "Switzerland", "lat": 47.3763, "lng": 8.5476 },
-  "Technical University of Munich": { "city": "Munich", "country": "Germany", "lat": 48.1497, "lng": 11.5679 },
-  "École Polytechnique": { "city": "Palaiseau", "country": "France", "lat": 48.7146, "lng": 2.211 },
-  "Delft University of Technology": { "city": "Delft", "country": "Netherlands", "lat": 52.0022, "lng": 4.3736 },
-  "KTH Royal Institute of Technology": { "city": "Stockholm", "country": "Sweden", "lat": 59.3498, "lng": 18.0707 },
-  "Massachusetts Institute of Technology": { "city": "Cambridge, MA", "country": "United States", "lat": 42.3601, "lng": -71.0942 },
-  "Stanford University": { "city": "Stanford", "country": "United States", "lat": 37.4275, "lng": -122.1697 },
-  "University of California, Berkeley": { "city": "Berkeley", "country": "United States", "lat": 37.8719, "lng": -122.2585 },
-  "Carnegie Mellon University": { "city": "Pittsburgh", "country": "United States", "lat": 40.4433, "lng": -79.9436 },
-  "University of Toronto": { "city": "Toronto", "country": "Canada", "lat": 43.6629, "lng": -79.3957 },
-  "University of Waterloo": { "city": "Waterloo", "country": "Canada", "lat": 43.4723, "lng": -80.5449 },
-  "Tecnológico de Monterrey": { "city": "Monterrey", "country": "Mexico", "lat": 25.6514, "lng": -100.2895 },
-  "Universidade de São Paulo": { "city": "São Paulo", "country": "Brazil", "lat": -23.5614, "lng": -46.7304 },
-  "University of Cape Town": { "city": "Cape Town", "country": "South Africa", "lat": -33.9577, "lng": 18.4612 },
-  "University of Lagos": { "city": "Lagos", "country": "Nigeria", "lat": 6.5158, "lng": 3.3896 },
-  "University of Nairobi": { "city": "Nairobi", "country": "Kenya", "lat": -1.2795, "lng": 36.8163 },
-  "Indian Institute of Technology Bombay": { "city": "Mumbai", "country": "India", "lat": 19.1334, "lng": 72.9133 },
-  "Indian Institute of Science": { "city": "Bengaluru", "country": "India", "lat": 13.0219, "lng": 77.5671 },
-  "National University of Singapore": { "city": "Singapore", "country": "Singapore", "lat": 1.2966, "lng": 103.7764 },
-  "The University of Tokyo": { "city": "Tokyo", "country": "Japan", "lat": 35.7126, "lng": 139.762 },
-  "KAIST": { "city": "Daejeon", "country": "South Korea", "lat": 36.3721, "lng": 127.3604 },
-  "Seoul National University": { "city": "Seoul", "country": "South Korea", "lat": 37.46, "lng": 126.952 },
-  "University of Melbourne": { "city": "Melbourne", "country": "Australia", "lat": -37.7963, "lng": 144.9614 },
-  "University of Sydney": { "city": "Sydney", "country": "Australia", "lat": -33.8886, "lng": 151.1873 },
-  "University of Auckland": { "city": "Auckland", "country": "New Zealand", "lat": -36.8523, "lng": 174.7691 }
+  "Carnegie Mellon University": {
+    "city": "Pittsburgh",
+    "country": "United States",
+    "lat": 40.4433,
+    "lng": -79.9436
+  },
+  "Delft University of Technology": {
+    "city": "Delft",
+    "country": "Netherlands",
+    "lat": 52.0022,
+    "lng": 4.3736
+  },
+  "École Polytechnique": {
+    "city": "Palaiseau",
+    "country": "France",
+    "lat": 48.7146,
+    "lng": 2.211
+  },
+  "ETH Zürich": {
+    "city": "Zürich",
+    "country": "Switzerland",
+    "lat": 47.3763,
+    "lng": 8.5476
+  },
+  "Imperial College London": {
+    "city": "London",
+    "country": "United Kingdom",
+    "lat": 51.4988,
+    "lng": -0.1749
+  },
+  "Indian Institute of Science": {
+    "city": "Bengaluru",
+    "country": "India",
+    "lat": 13.0219,
+    "lng": 77.5671
+  },
+  "Indian Institute of Technology Bombay": {
+    "city": "Mumbai",
+    "country": "India",
+    "lat": 19.1334,
+    "lng": 72.9133
+  },
+  "KAIST": {
+    "city": "Daejeon",
+    "country": "South Korea",
+    "lat": 36.3721,
+    "lng": 127.3604
+  },
+  "KTH Royal Institute of Technology": {
+    "city": "Stockholm",
+    "country": "Sweden",
+    "lat": 59.3498,
+    "lng": 18.0707
+  },
+  "Massachusetts Institute of Technology": {
+    "city": "Cambridge, MA",
+    "country": "United States",
+    "lat": 42.3601,
+    "lng": -71.0942
+  },
+  "McGill University": {
+    "city": "Sainte-Anne-de-Bellevue",
+    "country": "Canada",
+    "lat": 45.4318,
+    "lng": -73.9453
+  },
+  "Michigan State University": {
+    "city": "East Lansing",
+    "country": "United States",
+    "lat": 42.7024,
+    "lng": -84.4804
+  },
+  "National University of Singapore": {
+    "city": "Singapore",
+    "country": "Singapore",
+    "lat": 1.2966,
+    "lng": 103.7764
+  },
+  "Seoul National University": {
+    "city": "Seoul",
+    "country": "South Korea",
+    "lat": 37.46,
+    "lng": 126.952
+  },
+  "Stanford University": {
+    "city": "Stanford",
+    "country": "United States",
+    "lat": 37.4275,
+    "lng": -122.1697
+  },
+  "Technical University of Munich": {
+    "city": "Munich",
+    "country": "Germany",
+    "lat": 48.1497,
+    "lng": 11.5679
+  },
+  "Tecnológico de Monterrey": {
+    "city": "Monterrey",
+    "country": "Mexico",
+    "lat": 25.6514,
+    "lng": -100.2895
+  },
+  "The University of Tokyo": {
+    "city": "Tokyo",
+    "country": "Japan",
+    "lat": 35.7126,
+    "lng": 139.762
+  },
+  "Universidade de São Paulo": {
+    "city": "São Paulo",
+    "country": "Brazil",
+    "lat": -23.5614,
+    "lng": -46.7304
+  },
+  "University College London": {
+    "city": "London",
+    "country": "United Kingdom",
+    "lat": 51.5246,
+    "lng": -0.134
+  },
+  "University of Auckland": {
+    "city": "Auckland",
+    "country": "New Zealand",
+    "lat": -36.8523,
+    "lng": 174.7691
+  },
+  "University of California, Berkeley": {
+    "city": "Berkeley",
+    "country": "United States",
+    "lat": 37.8719,
+    "lng": -122.2585
+  },
+  "University of Cambridge": {
+    "city": "Cambridge",
+    "country": "United Kingdom",
+    "lat": 52.2054,
+    "lng": 0.1173
+  },
+  "University of Cape Town": {
+    "city": "Cape Town",
+    "country": "South Africa",
+    "lat": -33.9577,
+    "lng": 18.4612
+  },
+  "University of Edinburgh": {
+    "city": "Edinburgh",
+    "country": "United Kingdom",
+    "lat": 55.9445,
+    "lng": -3.1892
+  },
+  "University of Georgia": {
+    "city": "Athens",
+    "country": "United States",
+    "lat": 33.9404,
+    "lng": -83.3731
+  },
+  "University of Lagos": {
+    "city": "Lagos",
+    "country": "Nigeria",
+    "lat": 6.5158,
+    "lng": 3.3896
+  },
+  "University of Melbourne": {
+    "city": "Melbourne",
+    "country": "Australia",
+    "lat": -37.7963,
+    "lng": 144.9614
+  },
+  "University of Nairobi": {
+    "city": "Nairobi",
+    "country": "Kenya",
+    "lat": -1.2795,
+    "lng": 36.8163
+  },
+  "University of Oxford": {
+    "city": "Oxford",
+    "country": "United Kingdom",
+    "lat": 51.7548,
+    "lng": -1.2544
+  },
+  "University of Sydney": {
+    "city": "Sydney",
+    "country": "Australia",
+    "lat": -33.8886,
+    "lng": 151.1873
+  },
+  "University of Toronto": {
+    "city": "Toronto",
+    "country": "Canada",
+    "lat": 43.6629,
+    "lng": -79.3957
+  },
+  "University of Waterloo": {
+    "city": "Waterloo",
+    "country": "Canada",
+    "lat": 43.4723,
+    "lng": -80.5449
+  }
 }
