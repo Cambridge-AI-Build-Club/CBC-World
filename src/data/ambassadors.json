@@ -116,5 +116,12 @@
     "university": "University of Southern California (USC)",
     "email": "james.ledesma2004@gmail.com",
     "linkedin": "https://www.linkedin.com/in/jamie-ledesma/?isSelfProfile=true"
+  },
+  {
+    "id": "khang-nguyen",
+    "name": "Khang Nguyen",
+    "university": "University of California, Irvine",
+    "email": "khantn11@uci.edu",
+    "linkedin": "https://www.linkedin.com/in/khangtoannguyen/"
   }
 ]

@@ -161,6 +161,12 @@
     "lat": 37.8719,
     "lng": -122.2585
   },
+  "University of California, Irvine": {
+    "city": "Irvine",
+    "country": "United States",
+    "lat": 33.6429,
+    "lng": -117.8402
+  },
   "University of Cambridge": {
     "city": "Cambridge",
     "country": "United Kingdom",
