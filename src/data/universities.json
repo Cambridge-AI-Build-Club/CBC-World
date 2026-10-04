@@ -113,6 +113,12 @@
     "lat": 37.4275,
     "lng": -122.1697
   },
+  "Syracuse University": {
+    "city": "City of Syracuse",
+    "country": "United States",
+    "lat": 43.0171,
+    "lng": -76.1186
+  },
   "Technical University of Munich": {
     "city": "Munich",
     "country": "Germany",
