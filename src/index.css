@@ -63,6 +63,15 @@ body {
   will-change: transform;
   transition: opacity 150ms ease;
 }
+/* globe.gl sets an inline depth-sorted z-index every frame, and each marker is its own
+   stacking context, so lift the whole marker or its label renders under neighbours. */
+.marker:hover,
+.marker:focus-visible {
+  z-index: 100000 !important;
+}
+.marker[data-active='true'] {
+  z-index: 99999 !important;
+}
 .marker[data-hidden='true'] {
   opacity: 0;
   pointer-events: none;
