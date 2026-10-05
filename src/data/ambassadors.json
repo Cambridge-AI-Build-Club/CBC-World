@@ -130,5 +130,19 @@
     "university": "Syracuse University",
     "email": "josh@seiden.digital",
     "linkedin": "https://www.linkedin.com/in/seidenjosh?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
+  },
+  {
+    "id": "erik-markus-pedaja",
+    "name": "Erik Markus Pedaja",
+    "university": "Imperial College London",
+    "email": "erikmpedaja@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/erik-markus-pedaja/"
+  },
+  {
+    "id": "tejas-chakrapani",
+    "name": "Tejas Chakrapani",
+    "university": "University of Illinois Urbana-Champaign",
+    "email": "tejaslc2@illinois.edu",
+    "linkedin": "https://linkedin.com/in/tejas-chakrapani"
   }
 ]
