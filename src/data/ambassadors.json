@@ -144,5 +144,19 @@
     "university": "University of Illinois Urbana-Champaign",
     "email": "tejaslc2@illinois.edu",
     "linkedin": "https://linkedin.com/in/tejas-chakrapani"
+  },
+  {
+    "id": "elizabeth-ellie-wang",
+    "name": "Elizabeth (Ellie) Wang",
+    "university": "University of Georgia",
+    "email": "ellielwang1@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/ellielwang/"
+  },
+  {
+    "id": "manan-rastogi",
+    "name": "Manan Rastogi",
+    "university": "University of Pittsburgh",
+    "email": "mar869@pitt.edu",
+    "linkedin": "linkedin.com/in/mananras"
   }
 ]
