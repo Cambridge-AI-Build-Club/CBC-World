@@ -197,8 +197,10 @@ export const GlobeView = forwardRef<GlobeHandle, Props>(function GlobeView(
       const needed = altToSeparate(nearest);
       // Close enough in to give the selection its own marker; if neighbours are too close
       // to ever separate comfortably, settle for a metro-level view of the shared marker.
-      const altitude = needed >= FOCUS_MIN_ALT ? Math.min(FOCUS_MAX_ALT, needed) : 0.6;
-      flyTo(lat, lng, altitude, 1300);
+      const target = needed >= FOCUS_MIN_ALT ? Math.min(FOCUS_MAX_ALT, needed) : 0.6;
+      // Never zoom out on select: that would re-merge the marker the user just picked.
+      const current = globeRef.current?.pointOfView().altitude ?? target;
+      flyTo(lat, lng, Math.min(current, target), 1300);
     },
     [hubs, altToSeparate, flyTo],
   );
